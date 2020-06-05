@@ -37,6 +37,7 @@ if (! class_exists('Utility\Chip')) {
 
         /**
          * Initializer
+         * @throws \Exception
          */
         public function init()
         {
@@ -45,7 +46,11 @@ if (! class_exists('Utility\Chip')) {
                 for ($month = 1; $month <= 12; $month++) {
                     for ($page = 1; $page <= 300; $page++) {
                         $fileUrl = $baseUrl . "{$year}-{$month}-{$page}.jpg";
-                        new \Utility\Downloader($fileUrl);
+                        try {
+                            new \Utility\Downloader($fileUrl);
+                        } catch (\Exception $e) {
+                            break 1;
+                        }
                     }
                 }
             }

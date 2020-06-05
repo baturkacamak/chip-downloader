@@ -26,6 +26,8 @@ if (! class_exists('Utility\Downloader')) {
          * Downloader constructor.
          *
          * @param $fileUrl
+         *
+         * @throws \Exception
          */
         public function __construct($fileUrl)
         {
@@ -52,6 +54,9 @@ if (! class_exists('Utility\Downloader')) {
             }
         }
 
+        /**
+         * @throws \Exception
+         */
         private function download()
         {
             if (! file_exists($localFile = $this->getFileDirectory()) && $this->checkRemoteFile()) {
@@ -63,6 +68,8 @@ if (! class_exists('Utility\Downloader')) {
                     );
                 } catch (GuzzleException $e) {
                 }
+            } elseif (! file_exists($localFile) && ! $this->checkRemoteFile()) {
+                throw new \Exception('All files exists');
             }
         }
 

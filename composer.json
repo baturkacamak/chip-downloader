@@ -1,7 +1,13 @@
 {
   "autoload": {
     "psr-4": {
-      "Utility\\": "utility/Utility"
+      "Utility\\": "utility"
     }
+  },
+  "scripts": {
+    "test": "phpunit --configuration ./phpunit.xml"
+  },
+  "require": {
+    "phpunit/phpunit": "^9.5"
   }
 }

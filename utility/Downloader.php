@@ -55,6 +55,14 @@ if (! class_exists('Utility\Downloader')) {
         }
 
         /**
+         * @param Client $guzzle
+         */
+        public function setGuzzle($guzzle)
+        {
+            $this->guzzle = $guzzle;
+        }
+
+        /**
          * Check if the file exists on the remote server.
          *
          * @return bool

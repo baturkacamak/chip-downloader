@@ -13,7 +13,7 @@ if (! class_exists('Utility\Downloader')) {
      * Class Downloader
      * @package Utility
      */
-    class Downloader
+    class Downloader implements DownloaderInterface
     {
         /**
          * The URL of the file to download.
@@ -51,7 +51,7 @@ if (! class_exists('Utility\Downloader')) {
             );
 
             // Call the 'download()' method to start the download
-            $this->download();
+            $this->downloadFile();
         }
 
         /**
@@ -59,7 +59,7 @@ if (! class_exists('Utility\Downloader')) {
          *
          * @return bool
          */
-        private function checkRemoteFile()
+        public function checkRemoteFile()
         {
             // Try to get the HTTP headers of the file at the specified URL
             try {
@@ -78,7 +78,7 @@ if (! class_exists('Utility\Downloader')) {
          *
          * @throws \Exception If the file cannot be downloaded.
          */
-        private function download()
+        public function downloadFile()
         {
             // Check if the file does not exist locally and exists on the remote server
             if (! file_exists($localFile = $this->getFileDirectory()) && $this->checkRemoteFile()) {
@@ -107,7 +107,7 @@ if (! class_exists('Utility\Downloader')) {
          *
          * @return string
          */
-        private function getFileDirectory()
+        public function getFileDirectory()
         {
             // Parse the file URL to get the file name and the directory it is in
             $parsed_url = parse_url($this->fileUrl);

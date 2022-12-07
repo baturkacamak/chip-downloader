@@ -109,22 +109,25 @@ if (! class_exists('Utility\Downloader')) {
          */
         public function getFileDirectory()
         {
-            // Parse the file URL to get the file name and the directory it is in
+            // Parse the URL of the file to download
             $parsed_url = parse_url($this->fileUrl);
-            $file_name  = basename($parsed_url['path']);
-            $exploded   = explode('-', $file_name);
-            $year       = $exploded[0];
-            $month      = $exploded[1];
+
+            // Get the file name from the URL
+            $file_name = basename($parsed_url['path']);
+
+            // Split the file name into parts using the '-' character
+            $exploded = explode('-', $file_name);
 
             // Build the local file path based on the file name and the directory it is in
-            $directory = BASE_DIR . '/static/magazins' . "/{$exploded[0]}/$exploded[1]";
+            $directory = BASE_DIR . "/static/magazins/{$exploded[0]}/{$exploded[1]}";
+
+            // Create the directory if it does not exist
             if (! is_dir($directory)) {
-                // If the directory does not exist, create it
-                mkdir($directory, 0755, 1);
+                mkdir($directory, 0755, true);
             }
 
             // Return the local file path
-            return $directory . "/{$exploded[2]}";
+            return "{$directory}/{$exploded[2]}";
         }
     }
 }

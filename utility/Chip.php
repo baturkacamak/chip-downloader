@@ -8,18 +8,21 @@ namespace Utility;
 class Chip
 {
     /**
-     * The default values for the range elements
+     * The Downloader instance.
      *
-     * @var array
+     * @var Downloader
      */
-    private $defaults = [
-        'year-start' => 1997,
-        'year-end' => 2018,
-        'month-start' => 1,
-        'month-end' => 12,
-        'page-start' => 1,
-        'page-end' => 300,
-    ];
+    private $downloader;
+
+    /**
+     * Constructor.
+     *
+     * @param Downloader $downloader The Downloader instance.
+     */
+    public function __construct(Downloader $downloader)
+    {
+        $this->downloader = $downloader;
+    }
 
     /**
      * Initializer
@@ -48,17 +51,24 @@ class Chip
         $ranges = $this->mergeRangeValues($ranges);
 
         // Download the files using the specified ranges
-        $this->downloadFiles($ranges);
+        $this->downloader->download($ranges);
     }
 
     /**
-     * Get the default values for the range elements
+     * Set the default values for the range elements
      *
      * @return array The default values
      */
     private function getDefaultValues()
     {
-        return $this->defaults;
+        return [
+            'year-start' => 1997,
+            'year-end' => 2018,
+            'month-start' => 1,
+            'month-end' => 12,
+            'page-start' => 1,
+            'page-end' => 300,
+        ];
     }
 
     /**
@@ -76,43 +86,4 @@ class Chip
         // Merge the default values with the provided range values
         return array_merge($defaults, $ranges);
     }
-
-    /**
-     * Download the files using the specified ranges
-     *
-     * @param array $ranges The range values to use for downloading the files
-     *
-     * @throws \Exception
-     */
-    private function downloadFiles(array $ranges)
-    {
-        // Set the base URL for the files we want to download
-        $baseUrl = 'https://www.chip.com.tr/images/pdf/b/';
-
-        // Extract the range values from the array
-        extract($ranges);
-
-        // Loop through the specified years
-        for ($year = $year_start; $year <= $year_end; $year++) {
-            // Loop through the specified months
-            for ($month = $month_start; $month <= $month_end; $month++) {
-                // Loop through the specified pages
-                for ($page = $page_start; $page <= $page_end; $page++) {
-                    // Create the full URL of the file we want to download
-                    $fileUrl = $baseUrl . "{$year}-{$month}-{$page}.jpg";
-
-                    // Try to download the file
-                    try {
-                        // Create a new instance of the 'Utility\Downloader' class,
-                        // passing the URL of the file we want to download
-                        new \Utility\Downloader($fileUrl);
-                    } catch (\Exception $e) {
-                        // Log the exception
-                        error_log($e->getMessage());
-                    }
-                }
-            }
-        }
-    }
 }
-

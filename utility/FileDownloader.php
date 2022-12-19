@@ -7,13 +7,13 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 
-// Check if the 'Utility\Downloader' class already exists
-if (! class_exists('Utility\Downloader')) {
+// Check if the 'Utility\FileDownloader' class already exists
+if (! class_exists('Utility\FileDownloader')) {
     /**
-     * Class Downloader
+     * Class FileDownloader
      * @package Utility
      */
-    class Downloader implements DownloaderInterface
+    class FileDownloader implements DownloaderInterface
     {
         /**
          * The URL of the file to download.
@@ -29,7 +29,7 @@ if (! class_exists('Utility\Downloader')) {
         private $guzzle;
 
         /**
-         * Downloader constructor.
+         * FileDownloader constructor.
          *
          * @param string $fileUrl The URL of the file to download.
          *

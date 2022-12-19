@@ -18,12 +18,12 @@ class Downloader
      * Download a file
      *
      * @param array $ranges An array of ranges to loop through, with the following keys:
-     *                      'year-start' => The start year to loop through
-     *                      'year-end' => The end year to loop through
-     *                      'month-start' => The start month to loop through
-     *                      'month-end' => The end month to loop through
-     *                      'page-start' => The start page to loop through
-     *                      'page-end' => The end page to loop through
+     *                      'year_start' => The start year to loop through
+     *                      'year_end' => The end year to loop through
+     *                      'month_start' => The start month to loop through
+     *                      'month_end' => The end month to loop through
+     *                      'page_start' => The start page to loop through
+     *                      'page_end' => The end page to loop through
      *
      * @throws \Exception
      */
@@ -33,11 +33,11 @@ class Downloader
         extract($ranges);
 
         // Loop through all years from the start year to the end year
-        for ($year = $yearStart; $year <= $yearEnd; $year++) {
+        for ($year = $year_start; $year <= $year_end; $year++) {
             // Loop through all months from the start month to the end month
-            for ($month = $monthStart; $month <= $monthEnd; $month++) {
+            for ($month = $month_start; $month <= $month_end; $month++) {
                 // Loop through all pages from the start page to the end page
-                for ($page = $pageStart; $page <= $pageEnd; $page++) {
+                for ($page = $page_start; $page <= $page_end; $page++) {
                     // Create the full URL of the file we want to download
                     $fileUrl = $this->baseUrl . "{$year}-{$month}-{$page}.jpg";
 

@@ -39,14 +39,18 @@ class Downloader
                 // Loop through all pages from the start page to the end page
                 for ($page = $page_start; $page <= $page_end; $page++) {
                     // Create the full URL of the file we want to download
-                    $fileUrl = $this->baseUrl . "{$year}-{$month}-{$page}.jpg";
+                    $file_url = "{$this->baseUrl}{$year}-{$month}-{$page}.jpg";
 
-                    // Try to download the file
+                    // Create a new instance of the FileDownloader class, passing the file URL as an argument to the constructor
+                    $downloader = new FileDownloader($file_url);
+                    // Try to start the download process
                     try {
-                        file_get_contents($fileUrl);
+                        $downloader->downloadFile();
                     } catch (\Exception $e) {
+                        // Log the exception message
                         error_log($e->getMessage());
                     }
+
                 }
             }
         }

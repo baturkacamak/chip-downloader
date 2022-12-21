@@ -8,9 +8,10 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 
 // Check if the 'Utility\FileDownloader' class already exists
-if (! class_exists('Utility\FileDownloader')) {
+if (!class_exists('Utility\FileDownloader')) {
     /**
      * Class FileDownloader
+     *
      * @package Utility
      */
     class FileDownloader implements DownloaderInterface
@@ -63,11 +64,67 @@ if (! class_exists('Utility\FileDownloader')) {
         }
 
         /**
+         * Download the file from the remote server.
+         *
+         * @throws \Exception If the file cannot be downloaded.
+         */
+        public function downloadFile()
+        {
+            // Check if the file does not exist locally and exists on the remote server
+            if (!$this->isFileExistsLocally() && $this->isFileExistsRemotely()) {
+                // Try to download the file
+                try {
+                    // Use the Guzzle client to send a GET request to the file URL,
+                    // and save the file to the local file path
+                    $this->guzzle->request(
+                        'GET',
+                        $this->fileUrl,
+                        ['sink' => $this->getFileDirectory()]
+                    );
+                } catch (GuzzleException $e) {
+                    // If an error occurs while downloading the file,
+                    // do nothing (just catch the exception and continue)
+                }
+            } elseif (!$this->isFileExistsLocally() && !$this->isFileExistsRemotely()) {
+                // If the file does not exist locally and does not exist on the remote server,
+                // throw an exception
+                throw new \Exception('All files exists');
+            }
+        }
+
+        /**
+         * Get the local file path for the file.
+         *
+         * @return string
+         */
+        public function getFileDirectory(): string
+        {
+            // Parse the URL of the file to download
+            $parsed_url = parse_url($this->fileUrl);
+
+            // Get the file name from the URL
+            $file_name = basename($parsed_url['path']);
+
+            // Build the directory path based on the file name and the BASE_DIR constant
+            // string interpolation and the ... operator to concatenate the parts of the file name
+            $directory = sprintf('%s/static/magazins/%s/%s', BASE_DIR, ...explode('-', $file_name));
+
+            // Create the directory if it does not exist
+            // is_dir() function and the mkdir() function to check and create the directory
+            if (!is_dir($directory)) {
+                mkdir($directory, 0755, true);
+            }
+
+            // Return the local file path
+            return "$directory/$file_name";
+        }
+
+        /**
          * Check if the file exists on the remote server.
          *
          * @return bool
          */
-        public function checkRemoteFile()
+        public function isFileExistsRemotely()
         {
             // Try to get the HTTP headers of the file at the specified URL
             try {
@@ -82,62 +139,14 @@ if (! class_exists('Utility\FileDownloader')) {
         }
 
         /**
-         * Download the file from the remote server.
+         * Check if the file exists locally.
          *
-         * @throws \Exception If the file cannot be downloaded.
+         * @return bool True if the file exists locally, false otherwise.
          */
-        public function downloadFile()
+        private function isFileExistsLocally(): bool
         {
-            // Check if the file does not exist locally and exists on the remote server
-            if (! file_exists($localFile = $this->getFileDirectory()) && $this->checkRemoteFile()) {
-                // Try to download the file
-                try {
-                    // Use the Guzzle client to send a GET request to the file URL,
-                    // and save the file to the local file path
-                    $this->guzzle->request(
-                        'GET',
-                        $this->fileUrl,
-                        ['sink' => $localFile]
-                    );
-                } catch (GuzzleException $e) {
-                    // If an error occurs while downloading the file,
-                    // do nothing (just catch the exception and continue)
-                }
-            } elseif (! file_exists($localFile) && ! $this->checkRemoteFile()) {
-                // If the file does not exist locally and does not exist on the remote server,
-                // throw an exception
-                throw new \Exception('All files exists');
-            }
-        }
-
-        /**
-         * Get the local file path for the file.
-         *
-         * @return string
-         */
-        public function getFileDirectory()
-        {
-            // Parse the URL of the file to download
-            $parsed_url = parse_url($this->fileUrl);
-
-            // Get the file name from the URL
-            $file_name = basename($parsed_url['path']);
-
-            // Split the file name into parts using the '-' character
-            $exploded = explode('-', $file_name);
-
-            // Build the local file path based on the file name and the directory it is in
-            $directory = BASE_DIR . "/static/magazins/{$exploded[0]}/{$exploded[1]}";
-
-            // Create the directory if it does not exist
-            if (! is_dir($directory)) {
-                mkdir($directory, 0755, true);
-            }
-
-            // Return the local file path
-            return "{$directory}/{$exploded[2]}";
+            // Use the file_exists() function to check if the file exists at the local file path
+            return file_exists($this->getFileDirectory());
         }
     }
 }
-
-
